@@ -3,6 +3,7 @@ import Layout from "./layout";
 import SVGUpload from "./components/SVGUpload";
 import SVGPixelator from "./components/SVGPixelator";
 import Controls from "./components/Controls";
+import Footer from "./components/Footer";
 
 function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -69,6 +70,7 @@ function App() {
           </section>
         </div>
       </div>
+      <Footer />
     </Layout>
   );
 }
