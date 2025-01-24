@@ -1,10 +1,41 @@
 import React, { useEffect, useRef, useState } from "react";
 
+function RGBToHex({ r, g, b }: { r: number; g: number; b: number }) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+// Got from https://stackoverflow.com/questions/2541481/get-average-color-of-image-via-javascript
+const getAverageColor = (data: ImageData["data"]) => {
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  let count = 0;
+
+  // Loop through data array in steps of 4 (r,g,b,a)
+  for (let i = 0; i < data.length; i += 4) {
+    // Only count pixels that aren't fully transparent
+    if (data[i + 3] > 0) {
+      r += data[i];
+      g += data[i + 1];
+      b += data[i + 2];
+      count++;
+    }
+  }
+
+  // Calculate averages
+  r = Math.round(r / count);
+  g = Math.round(g / count);
+  b = Math.round(b / count);
+
+  return { r, g, b };
+};
+
 interface SVGPixelatorProps {
   svgString: string;
   gridSize: number;
   dotSize: number;
   shape: "square" | "circle";
+  monoColor: boolean;
 }
 
 const SVGPixelator: React.FC<SVGPixelatorProps> = ({
@@ -12,6 +43,7 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
   gridSize,
   dotSize,
   shape,
+  monoColor,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hasOutput, setHasOutput] = useState(false);
@@ -89,6 +121,14 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
             1
           ).data;
 
+          let hexColor = "currentColor";
+
+          if (!monoColor) {
+            const avgColor = getAverageColor(imageData);
+            hexColor = RGBToHex(avgColor);
+            console.log(hexColor);
+          }
+
           // Check if pixel is not transparent
           if (imageData[3] > 0) {
             const dot = document.createElementNS(
@@ -106,7 +146,7 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
               dot.setAttribute("width", dotSize.toString());
               dot.setAttribute("height", dotSize.toString());
             }
-            dot.setAttribute("fill", "#000");
+            dot.setAttribute("fill", hexColor);
             pixelatedSvg.appendChild(dot);
           }
         }
@@ -128,7 +168,7 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
         setHasOutput(false);
       }
     };
-  }, [svgString, gridSize, dotSize, shape]);
+  }, [svgString, gridSize, dotSize, shape, monoColor]);
 
   return (
     <div className="space-y-4">

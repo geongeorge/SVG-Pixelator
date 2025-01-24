@@ -1,4 +1,4 @@
-import { Listbox } from "@headlessui/react";
+import { Listbox, Switch } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 interface ControlsProps {
@@ -8,6 +8,8 @@ interface ControlsProps {
   onGridSizeChange: (size: number) => void;
   onDotSizeChange: (size: number) => void;
   onShapeChange: (shape: "square" | "circle") => void;
+  onMonoColorChange: (monoColor: boolean) => void;
+  monoColor: boolean;
 }
 
 const shapes = [
@@ -22,6 +24,8 @@ const Controls: React.FC<ControlsProps> = ({
   onGridSizeChange,
   onDotSizeChange,
   onShapeChange,
+  onMonoColorChange,
+  monoColor,
 }) => {
   return (
     <div className="rounded-lg">
@@ -99,6 +103,25 @@ const Controls: React.FC<ControlsProps> = ({
             </Listbox.Options>
           </div>
         </Listbox>
+      </div>
+      <div className="flex items-center gap-2 mt-4">
+        <label className="block text-sm font-medium text-gray-900 mb-2">
+          Mono Color
+        </label>
+        <Switch
+          checked={monoColor}
+          onChange={onMonoColorChange}
+          className={`${
+            monoColor ? "bg-black" : "bg-gray-300 border border-gray-400"
+          } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+        >
+          <span className="sr-only">Enable mono color</span>
+          <span
+            className={`${
+              monoColor ? "translate-x-6" : "translate-x-1"
+            } inline-block h-4 w-4 transform rounded-full bg-gray-400 transition-transform`}
+          />
+        </Switch>
       </div>
     </div>
   );

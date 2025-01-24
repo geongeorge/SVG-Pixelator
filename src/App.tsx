@@ -11,6 +11,7 @@ function App() {
   const [gridSize, setGridSize] = useState(8);
   const [dotSize, setDotSize] = useState(6);
   const [shape, setShape] = useState<"square" | "circle">("square");
+  const [monoColor, setMonoColor] = useState(false);
 
   const handleFileSelect = (file: File | null) => {
     setSelectedFile(file);
@@ -54,6 +55,8 @@ function App() {
                   onGridSizeChange={setGridSize}
                   onDotSizeChange={setDotSize}
                   onShapeChange={setShape}
+                  onMonoColorChange={setMonoColor}
+                  monoColor={monoColor}
                 />
               </div>
             )}
@@ -62,6 +65,7 @@ function App() {
         <div className="md:w-1/2">
           <section className="max-w-2xl">
             <SVGPixelator
+              monoColor={monoColor}
               svgString={svgString}
               gridSize={gridSize}
               dotSize={dotSize}
