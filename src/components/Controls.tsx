@@ -1,3 +1,6 @@
+import { Listbox } from "@headlessui/react";
+import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
+
 interface ControlsProps {
   gridSize: number;
   dotSize: number;
@@ -6,6 +9,11 @@ interface ControlsProps {
   onDotSizeChange: (size: number) => void;
   onShapeChange: (shape: "square" | "circle") => void;
 }
+
+const shapes = [
+  { id: 1, name: "Square", value: "square" },
+  { id: 2, name: "Circle", value: "circle" },
+] as const;
 
 const Controls: React.FC<ControlsProps> = ({
   gridSize,
@@ -16,11 +24,11 @@ const Controls: React.FC<ControlsProps> = ({
   onShapeChange,
 }) => {
   return (
-    <div className="space-y-4">
+    <div className="rounded-lg">
       <div>
         <label
           htmlFor="grid-size"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-gray-900 mb-2"
         >
           Grid Size: {gridSize}px
         </label>
@@ -31,13 +39,13 @@ const Controls: React.FC<ControlsProps> = ({
           max="32"
           value={gridSize}
           onChange={(e) => onGridSizeChange(Number(e.target.value))}
-          className="w-full"
+          className="w-full h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:bg-black [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer"
         />
       </div>
       <div>
         <label
           htmlFor="dot-size"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-gray-900 mb-2"
         >
           Dot Size: {dotSize}px
         </label>
@@ -48,25 +56,49 @@ const Controls: React.FC<ControlsProps> = ({
           max={gridSize - 2}
           value={dotSize}
           onChange={(e) => onDotSizeChange(Number(e.target.value))}
-          className="w-full"
+          className="w-full h-1 bg-gray-300  rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:bg-black [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer"
         />
       </div>
-      <div>
-        <label
-          htmlFor="shape"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+      <div className="relative">
+        <label className="block text-sm font-medium text-gray-900 mb-2">
           Shape
         </label>
-        <select
-          id="shape"
-          value={shape}
-          onChange={(e) => onShapeChange(e.target.value as "square" | "circle")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        >
-          <option value="square">Square</option>
-          <option value="circle">Circle</option>
-        </select>
+        <Listbox value={shape} onChange={onShapeChange}>
+          <div className="relative">
+            <Listbox.Button className="relative w-full px-3 py-2 bg-slate-100 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none text-left">
+              <span className="block truncate capitalize">{shape}</span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <ChevronUpDownIcon
+                  className="h-4 w-4 text-gray-400"
+                  aria-hidden="true"
+                />
+              </span>
+            </Listbox.Button>
+            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              {shapes.map((shapeOption) => (
+                <Listbox.Option
+                  key={shapeOption.id}
+                  value={shapeOption.value}
+                  className={({ active }) =>
+                    `relative cursor-pointer select-none py-2 pl-3 pr-9 ${
+                      active ? "bg-slate-100" : "text-gray-900"
+                    }`
+                  }
+                >
+                  {({ selected }) => (
+                    <span
+                      className={`block truncate capitalize ${
+                        selected ? "font-medium" : "font-normal"
+                      }`}
+                    >
+                      {shapeOption.name}
+                    </span>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </div>
+        </Listbox>
       </div>
     </div>
   );

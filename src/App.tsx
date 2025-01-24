@@ -44,14 +44,18 @@ function App() {
           </section>
 
           <section className="max-w-2xl mt-8">
-            <Controls
-              gridSize={gridSize}
-              dotSize={dotSize}
-              shape={shape}
-              onGridSizeChange={setGridSize}
-              onDotSizeChange={setDotSize}
-              onShapeChange={setShape}
-            />
+            {selectedFile && (
+              <div className="max-w-96">
+                <Controls
+                  gridSize={gridSize}
+                  dotSize={dotSize}
+                  shape={shape}
+                  onGridSizeChange={setGridSize}
+                  onDotSizeChange={setDotSize}
+                  onShapeChange={setShape}
+                />
+              </div>
+            )}
           </section>
         </div>
         <div className="md:w-1/2">

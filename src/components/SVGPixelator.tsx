@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface SVGPixelatorProps {
   svgString: string;
@@ -14,9 +14,36 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
   shape,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [hasOutput, setHasOutput] = useState(false);
+
+  const handleDownload = () => {
+    if (!containerRef.current) return;
+
+    const svg = containerRef.current.querySelector("svg");
+    if (!svg) return;
+
+    // Create a blob from the SVG
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgData], { type: "image/svg+xml" });
+
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "pixelated.svg";
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
-    if (!svgString || !containerRef.current) return;
+    if (!svgString || !containerRef.current) {
+      setHasOutput(false);
+      return;
+    }
 
     // Create a temporary div to parse SVG dimensions
     const tempDiv = document.createElement("div");
@@ -89,6 +116,7 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
       if (containerRef.current) {
         containerRef.current.innerHTML = "";
         containerRef.current.appendChild(pixelatedSvg);
+        setHasOutput(true);
       }
     };
     img.src = svgUrl;
@@ -97,11 +125,27 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
     return () => {
       if (containerRef.current) {
         containerRef.current.innerHTML = "";
+        setHasOutput(false);
       }
     };
   }, [svgString, gridSize, dotSize, shape]);
 
-  return <div ref={containerRef} />;
+  return (
+    <div className="space-y-4">
+      <div ref={containerRef} className="w-full h-full" />
+      <div className="flex justify-center">
+        {hasOutput && (
+          <button
+            type="button"
+            onClick={handleDownload}
+            className="px-4 py-2 rounded-lg text-hotred bg-hotred/10 cursor-pointer hover:bg-hotred/20 transition-colors"
+          >
+            Download SVG
+          </button>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default SVGPixelator;
