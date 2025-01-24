@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+.barlow-regular {
+  font-family: "Barlow", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.barlow-semibold {
+  font-family: "Barlow", serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.pixelify-sans {
+  font-family: "Pixelify Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@theme {
+  --font-display: "Pixelify Sans", "sans-serif";
+  --font-body: "Barlow", "sans-serif";
+  --color-hotred: #ff204e;
+}
