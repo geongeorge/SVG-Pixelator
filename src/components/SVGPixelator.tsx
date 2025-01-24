@@ -2,14 +2,16 @@ import React, { useEffect, useRef } from "react";
 
 interface SVGPixelatorProps {
   svgString: string;
-  gridSize?: number;
-  dotSize?: number;
+  gridSize: number;
+  dotSize: number;
+  shape: "square" | "circle";
 }
 
 const SVGPixelator: React.FC<SVGPixelatorProps> = ({
   svgString,
-  gridSize = 8,
-  dotSize = 6,
+  gridSize,
+  dotSize,
+  shape,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -64,12 +66,19 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
           if (imageData[3] > 0) {
             const dot = document.createElementNS(
               "http://www.w3.org/2000/svg",
-              "rect"
+              shape === "circle" ? "circle" : "rect"
             );
-            dot.setAttribute("x", (x + (gridSize - dotSize) / 2).toString());
-            dot.setAttribute("y", (y + (gridSize - dotSize) / 2).toString());
-            dot.setAttribute("width", dotSize.toString());
-            dot.setAttribute("height", dotSize.toString());
+
+            if (shape === "circle") {
+              dot.setAttribute("cx", (x + gridSize / 2).toString());
+              dot.setAttribute("cy", (y + gridSize / 2).toString());
+              dot.setAttribute("r", (dotSize / 2).toString());
+            } else {
+              dot.setAttribute("x", (x + (gridSize - dotSize) / 2).toString());
+              dot.setAttribute("y", (y + (gridSize - dotSize) / 2).toString());
+              dot.setAttribute("width", dotSize.toString());
+              dot.setAttribute("height", dotSize.toString());
+            }
             dot.setAttribute("fill", "#000");
             pixelatedSvg.appendChild(dot);
           }
@@ -90,7 +99,7 @@ const SVGPixelator: React.FC<SVGPixelatorProps> = ({
         containerRef.current.innerHTML = "";
       }
     };
-  }, [svgString, gridSize, dotSize]);
+  }, [svgString, gridSize, dotSize, shape]);
 
   return <div ref={containerRef} />;
 };

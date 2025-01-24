@@ -1,11 +1,15 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Layout from "./layout";
 import SVGUpload from "./components/SVGUpload";
 import SVGPixelator from "./components/SVGPixelator";
+import Controls from "./components/Controls";
 
 function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [svgString, setSvgString] = useState<string>("");
+  const [gridSize, setGridSize] = useState(8);
+  const [dotSize, setDotSize] = useState(6);
+  const [shape, setShape] = useState<"square" | "circle">("square");
 
   const handleFileSelect = (file: File | null) => {
     setSelectedFile(file);
@@ -38,10 +42,26 @@ function App() {
           <section className="max-w-2xl mt-4">
             <SVGUpload onFileSelect={handleFileSelect} />
           </section>
+
+          <section className="max-w-2xl mt-8">
+            <Controls
+              gridSize={gridSize}
+              dotSize={dotSize}
+              shape={shape}
+              onGridSizeChange={setGridSize}
+              onDotSizeChange={setDotSize}
+              onShapeChange={setShape}
+            />
+          </section>
         </div>
         <div className="md:w-1/2">
           <section className="max-w-2xl">
-            <SVGPixelator svgString={svgString} />
+            <SVGPixelator
+              svgString={svgString}
+              gridSize={gridSize}
+              dotSize={dotSize}
+              shape={shape}
+            />
           </section>
         </div>
       </div>
